@@ -36,24 +36,24 @@ public class PortfolioController {
     return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
   }
 
-  @PostMapping("/login")
-  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> login(
-      @RequestBody AuthDetailModel authDetailModel) {
-    logger
-        .info("Received request for login with email: {}, userName: {}", authDetailModel.getEmail(),
-            authDetailModel.getUserName());
-    DynamicProfileResponseObject<UserDetailsModel> responseObject =
-        userDetailsService.getUser(authDetailModel);
-    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
-  }
-
-  @PostMapping("/update/user")
-  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> updateUser(
-      @RequestBody UserDetailsModel userDetailsModel) {
-    logger.info("Received request for update with userDetailsModel: {}", userDetailsModel);
-    DynamicProfileResponseObject<UserDetailsModel> responseObject =
-        userDetailsService.updateUser(userDetailsModel);
-    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
-  }
+//  @PostMapping("/login")
+//  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> login(
+//      @RequestBody AuthDetailModel authDetailModel) {
+//    logger
+//        .info("Received request for login with email: {}, userName: {}", authDetailModel.getEmail(),
+//            authDetailModel.getUserName());
+//    DynamicProfileResponseObject<UserDetailsModel> responseObject =
+//        userDetailsService.getUser(authDetailModel);
+//    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
+//  }
+//
+//  @PostMapping("/update/user")
+//  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> updateUser(
+//      @RequestBody UserDetailsModel userDetailsModel) {
+//    logger.info("Received request for update with userDetailsModel: {}", userDetailsModel);
+//    DynamicProfileResponseObject<UserDetailsModel> responseObject =
+//        userDetailsService.updateUser(userDetailsModel);
+//    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
+//  }
 
 }

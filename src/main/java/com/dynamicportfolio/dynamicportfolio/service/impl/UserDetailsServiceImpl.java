@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,12 +38,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   private Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
   @Autowired
-  @Qualifier("com.dynamicportfolio.dynamicportfolio.repo.UserDetailsRepo")
   private UserDetailsRepo userDetailsRepo;
 
   @Autowired
   @Qualifier("com.dynamicportfolio.dynamicportfolio.service.impl.SequenceGeneratorServiceImpl")
   private SequenceGeneratorService sequenceGeneratorService;
+
+  /*@Override
+  public DynamicProfileResponseObject<UserDetailsModel> createUser(
+      UserDetailsModel userDetailsModel) {
+    UserDetails userDetails = new UserDetails();
+    userDetails = setUserDetails(userDetailsModel,userDetails);
+
+    if (Objects.nonNull(userDetails)) {
+      userDetails = userDetailsRepo.createUser(userDetails);
+    }
+  }*/
+
 
   @Override
   public DynamicProfileResponseObject<UserDetailsModel> createUser(
@@ -51,11 +63,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     DynamicProfileResponseObject<UserDetailsModel> responseObject =
         new DynamicProfileResponseObject<>(DynamicProfileStatusCode.PROCESSING_ERROR);
     if (userDetailsModel.validate()) {
-      UserDetails userDetails = userDetailsRepo.findByAuthDetail_EmailOrAuthDetail_UserName(
+      /*UserDetails userDetails = userDetailsRepo.findByAuthDetail_EmailOrAuthDetail_UserName(
           userDetailsModel.getAuthDetailModel().getEmail(),
           userDetailsModel.getAuthDetailModel().getUserName());
-      if (Objects.isNull(userDetails)) {
-        userDetails = new UserDetails();
+      if (Objects.isNull(userDetails)) {*/
+      UserDetails userDetails = new UserDetails();
 
         AuthDetail authDetail = new AuthDetail();
         BeanUtils.copyProperties(userDetailsModel.getAuthDetailModel(), authDetail);
@@ -63,7 +75,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userDetails.setName(userDetailsModel.getName());
         userDetails.setAuthDetail(authDetail);
 
-        UserDetails userDetailsInDb = userDetailsRepo.save(userDetails);
+        UserDetails userDetailsInDb = userDetailsRepo.createUser(userDetails);
         AuthDetailModel authDetailModel = new AuthDetailModel();
         if (Objects.nonNull(userDetailsInDb) && Objects.nonNull(userDetailsInDb.getAuthDetail())) {
           authDetail = userDetailsInDb.getAuthDetail();
@@ -84,14 +96,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         logger.error("user already exists for userDetailsModel: {}", userDetailsModel);
         responseObject.setStatus(DynamicProfileStatusCode.USER_ALREADY_EXISTS);
       }
-    } else {
+    /*} else {
       logger.error("required field is null for userDetailsModel: {}", userDetailsModel);
       responseObject.setStatus(DynamicProfileStatusCode.NULL_FIELD);
-    }
+    }*/
     return responseObject;
   }
 
-  @Override
+  /*@Override
   public DynamicProfileResponseObject<UserDetailsModel> getUser(AuthDetailModel authDetailModel) {
     logger.info("request came to fetch email: {}, username: {}", authDetailModel.getEmail(),
         authDetailModel.getUserName());
@@ -112,7 +124,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       responseObject.setStatus(DynamicProfileStatusCode.INVALID_DETAILS);
     }
     return responseObject;
-  }
+  }*/
 
   private UserDetailsModel setUserDetailsModel(UserDetails userDetails,
       UserDetailsModel userDetailsModel) {
@@ -164,7 +176,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     return userDetailsModel;
   }
 
-  @Override
+  /*@Override
   public DynamicProfileResponseObject<UserDetailsModel> updateUser(
       UserDetailsModel userDetailsModel) {
     logger.info("request came to update new user: {}", userDetailsModel);
@@ -192,7 +204,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       responseObject.setStatus(DynamicProfileStatusCode.USER_DOES_NOT_EXIST);
     }
     return responseObject;
-  }
+  }*/
 
   private UserDetails setUserDetails(UserDetailsModel userDetailsModel, UserDetails userDetails) {
     SocialMediaDetails socialMediaDetails;
