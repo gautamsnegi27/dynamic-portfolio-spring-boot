@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/")
+@RequestMapping()
 public class PortfolioController {
 
   @Autowired
@@ -26,6 +27,11 @@ public class PortfolioController {
   private UserDetailsService userDetailsService;
 
   private Logger logger = LoggerFactory.getLogger(PortfolioController.class);
+
+  @GetMapping("/")
+  String status(){
+    return "application started";
+  }
 
   @PostMapping("/create/user")
   ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> createUser(
