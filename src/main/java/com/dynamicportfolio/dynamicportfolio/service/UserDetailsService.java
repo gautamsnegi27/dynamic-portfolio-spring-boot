@@ -8,6 +8,8 @@ import com.dynamicportfolio.dynamicportfolio.model.DynamicProfileResponseObject;
 public interface UserDetailsService {
   DynamicProfileResponseObject<UserDetailsModel> createUser(UserDetailsModel userDetailsModel);
 
+  DynamicProfileResponseObject<UserDetailsModel> fetchUser(Long id);
+
   /*DynamicProfileResponseObject<UserDetailsModel> getUser(AuthDetailModel authDetailModel);
 
   DynamicProfileResponseObject<UserDetailsModel> updateUser(UserDetailsModel userDetailsModel);*/

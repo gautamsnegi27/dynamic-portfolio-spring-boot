@@ -1,7 +1,6 @@
 package com.dynamicportfolio.dynamicportfolio.controller;
 
 
-import com.dynamicportfolio.dynamicportfolio.model.AuthDetailModel;
 import com.dynamicportfolio.dynamicportfolio.model.DynamicProfileResponseObject;
 import com.dynamicportfolio.dynamicportfolio.model.UserDetailsModel;
 import com.dynamicportfolio.dynamicportfolio.service.UserDetailsService;
@@ -12,9 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
@@ -29,8 +30,17 @@ public class PortfolioController {
   private Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 
   @GetMapping("/")
-  String status(){
+  String status() {
     return "application started";
+  }
+
+  @GetMapping("/:id")
+  @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> getUser(
+      @PathVariable("id") Long id) {
+    DynamicProfileResponseObject<UserDetailsModel> responseObject =
+        userDetailsService.fetchUser(id);
+    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
   }
 
   @PostMapping("/create/user")
@@ -42,24 +52,25 @@ public class PortfolioController {
     return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
   }
 
-//  @PostMapping("/login")
-//  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> login(
-//      @RequestBody AuthDetailModel authDetailModel) {
-//    logger
-//        .info("Received request for login with email: {}, userName: {}", authDetailModel.getEmail(),
-//            authDetailModel.getUserName());
-//    DynamicProfileResponseObject<UserDetailsModel> responseObject =
-//        userDetailsService.getUser(authDetailModel);
-//    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
-//  }
-//
-//  @PostMapping("/update/user")
-//  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> updateUser(
-//      @RequestBody UserDetailsModel userDetailsModel) {
-//    logger.info("Received request for update with userDetailsModel: {}", userDetailsModel);
-//    DynamicProfileResponseObject<UserDetailsModel> responseObject =
-//        userDetailsService.updateUser(userDetailsModel);
-//    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
-//  }
+  //  @PostMapping("/login")
+  //  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> login(
+  //      @RequestBody AuthDetailModel authDetailModel) {
+  //    logger
+  //        .info("Received request for login with email: {}, userName: {}", authDetailModel
+  //        .getEmail(),
+  //            authDetailModel.getUserName());
+  //    DynamicProfileResponseObject<UserDetailsModel> responseObject =
+  //        userDetailsService.getUser(authDetailModel);
+  //    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
+  //  }
+  //
+  //  @PostMapping("/update/user")
+  //  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> updateUser(
+  //      @RequestBody UserDetailsModel userDetailsModel) {
+  //    logger.info("Received request for update with userDetailsModel: {}", userDetailsModel);
+  //    DynamicProfileResponseObject<UserDetailsModel> responseObject =
+  //        userDetailsService.updateUser(userDetailsModel);
+  //    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
+  //  }
 
 }

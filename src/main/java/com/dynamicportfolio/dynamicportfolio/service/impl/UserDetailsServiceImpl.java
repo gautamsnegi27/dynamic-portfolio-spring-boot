@@ -105,6 +105,24 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     return responseObject;
   }
 
+  @Override
+  public DynamicProfileResponseObject<UserDetailsModel> fetchUser(Long id) {
+    DynamicProfileResponseObject<UserDetailsModel> responseObject =
+        new DynamicProfileResponseObject<>(DynamicProfileStatusCode.PROCESSING_ERROR);
+
+    UserDetails userDetails = userDetailsRepo.fetchUser(id);
+    UserDetailsModel userDetailsModel = new UserDetailsModel();
+    userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
+    if (Objects.nonNull(userDetailsModel.getAuthDetailModel())){
+      userDetailsModel.getAuthDetailModel().setPassword(null);
+    }
+
+    responseObject.setResponseObject(userDetailsModel);
+    responseObject.setStatus(DynamicProfileStatusCode.SUCCESS);
+    return responseObject;
+
+  }
+
   /*@Override
   public DynamicProfileResponseObject<UserDetailsModel> getUser(AuthDetailModel authDetailModel) {
     logger.info("request came to fetch email: {}, username: {}", authDetailModel.getEmail(),
