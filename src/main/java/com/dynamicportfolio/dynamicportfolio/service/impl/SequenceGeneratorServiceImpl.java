@@ -21,9 +21,9 @@ public class SequenceGeneratorServiceImpl implements SequenceGeneratorService {
 
   @Override
   public Long generateSequence(String seqName) {
-    DatabaseSequence databaseSequence = mongoTemplate.findAndModify(query(where("_id").is(seqName)),
-        new Update().inc("seq",1), options().returnNew(true).upsert(true),
-        DatabaseSequence.class);
+    DatabaseSequence databaseSequence = mongoTemplate
+        .findAndModify(query(where("_id").is(seqName)), new Update().inc("seq", 1),
+            options().returnNew(true).upsert(true), DatabaseSequence.class);
     return !Objects.isNull(databaseSequence) ? databaseSequence.getSeq() : 1;
   }
 }

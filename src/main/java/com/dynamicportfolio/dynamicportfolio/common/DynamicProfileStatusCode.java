@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum DynamicProfileStatusCode implements AppCode<DynamicProfileStatusCode>{
+public enum DynamicProfileStatusCode implements AppCode<DynamicProfileStatusCode> {
 
   SUCCESS(1000, "SUCCESS"),
   PROCESSING_ERROR(999, "PROCESSING_ERROR"),
@@ -19,8 +19,8 @@ public enum DynamicProfileStatusCode implements AppCode<DynamicProfileStatusCode
 
 
   private static Map<Integer, DynamicProfileStatusCode> FORMAT_MAP =
-      Stream
-          .of(DynamicProfileStatusCode.values()).collect(Collectors.toMap(s -> s.code, Function.identity()));
+      Stream.of(DynamicProfileStatusCode.values())
+          .collect(Collectors.toMap(s -> s.code, Function.identity()));
 
   private final int code;
 
@@ -33,7 +33,8 @@ public enum DynamicProfileStatusCode implements AppCode<DynamicProfileStatusCode
 
   @JsonCreator // This is the factory method and must be static
   public static DynamicProfileStatusCode fromJson(CodeDesc codeDesc) {
-    return Optional.ofNullable(FORMAT_MAP.get(codeDesc.getCode())).orElseThrow(() -> new IllegalArgumentException(codeDesc.toString()));
+    return Optional.ofNullable(FORMAT_MAP.get(codeDesc.getCode()))
+        .orElseThrow(() -> new IllegalArgumentException(codeDesc.toString()));
   }
 
   // validity of status code

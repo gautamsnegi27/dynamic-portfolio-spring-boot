@@ -82,12 +82,13 @@ public class UserDetailsModel {
     this.experienceDetailModels = experienceDetailModels;
   }
 
-  public Boolean validate(){
-    if (null == name || Objects.isNull(authDetailModel) || !authDetailModel.validate()){
+  public Boolean validate() {
+    if (null == name || Objects.isNull(authDetailModel) || !authDetailModel.validate()) {
       return Boolean.FALSE;
     }
     return Boolean.TRUE;
   }
+
   @Override
   public String toString() {
     return "UserDetailsModel{" + "id=" + id + ", description='" + description + '\''

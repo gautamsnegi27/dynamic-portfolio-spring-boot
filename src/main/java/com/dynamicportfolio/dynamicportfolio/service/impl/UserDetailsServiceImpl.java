@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,18 +44,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Qualifier("com.dynamicportfolio.dynamicportfolio.service.impl.SequenceGeneratorServiceImpl")
   private SequenceGeneratorService sequenceGeneratorService;
 
-  /*@Override
-  public DynamicProfileResponseObject<UserDetailsModel> createUser(
-      UserDetailsModel userDetailsModel) {
-    UserDetails userDetails = new UserDetails();
-    userDetails = setUserDetails(userDetailsModel,userDetails);
-
-    if (Objects.nonNull(userDetails)) {
-      userDetails = userDetailsRepo.createUser(userDetails);
-    }
-  }*/
-
-
   @Override
   public DynamicProfileResponseObject<UserDetailsModel> createUser(
       UserDetailsModel userDetailsModel) {
@@ -70,34 +57,34 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       if (Objects.isNull(userDetails)) {*/
       UserDetails userDetails = new UserDetails();
 
-        AuthDetail authDetail = new AuthDetail();
-        BeanUtils.copyProperties(userDetailsModel.getAuthDetailModel(), authDetail);
-        userDetails.setId(sequenceGeneratorService.generateSequence(UserDetails.SEQUENCE_NAME));
-        userDetails.setName(userDetailsModel.getName());
-        userDetails.setAuthDetail(authDetail);
+      AuthDetail authDetail = new AuthDetail();
+      BeanUtils.copyProperties(userDetailsModel.getAuthDetailModel(), authDetail);
+      userDetails.setId(sequenceGeneratorService.generateSequence(UserDetails.SEQUENCE_NAME));
+      userDetails.setName(userDetailsModel.getName());
+      userDetails.setAuthDetail(authDetail);
 
-        logger.info("sequence number created: {}", userDetails.getId());
-        UserDetails userDetailsInDb = userDetailsRepo.createUser(userDetails);
-        AuthDetailModel authDetailModel = new AuthDetailModel();
-        if (Objects.nonNull(userDetailsInDb) && Objects.nonNull(userDetailsInDb.getAuthDetail())) {
-          authDetail = userDetailsInDb.getAuthDetail();
-          authDetail.setPassword(null);
-          BeanUtils.copyProperties(authDetail, authDetailModel);
-          UserDetailsModel userDetailsModelResponse = new UserDetailsModel();
-          userDetailsModelResponse.setAuthDetailModel(authDetailModel);
-          userDetailsModelResponse.setId(userDetailsInDb.getId());
-          userDetailsModelResponse.setName(userDetailsInDb.getName());
+      logger.info("sequence number created: {}", userDetails.getId());
+      UserDetails userDetailsInDb = userDetailsRepo.createUser(userDetails);
+      AuthDetailModel authDetailModel = new AuthDetailModel();
+      if (Objects.nonNull(userDetailsInDb) && Objects.nonNull(userDetailsInDb.getAuthDetail())) {
+        authDetail = userDetailsInDb.getAuthDetail();
+        authDetail.setPassword(null);
+        BeanUtils.copyProperties(authDetail, authDetailModel);
+        UserDetailsModel userDetailsModelResponse = new UserDetailsModel();
+        userDetailsModelResponse.setAuthDetailModel(authDetailModel);
+        userDetailsModelResponse.setId(userDetailsInDb.getId());
+        userDetailsModelResponse.setName(userDetailsInDb.getName());
 
-          responseObject.setResponseObject(userDetailsModelResponse);
-          responseObject.setStatus(DynamicProfileStatusCode.SUCCESS);
-        } else {
-
-          responseObject.setStatus(DynamicProfileStatusCode.PROCESSING_ERROR);
-        }
+        responseObject.setResponseObject(userDetailsModelResponse);
+        responseObject.setStatus(DynamicProfileStatusCode.SUCCESS);
       } else {
-        logger.error("user already exists for userDetailsModel: {}", userDetailsModel);
-        responseObject.setStatus(DynamicProfileStatusCode.USER_ALREADY_EXISTS);
+
+        responseObject.setStatus(DynamicProfileStatusCode.PROCESSING_ERROR);
       }
+    } else {
+      logger.error("user already exists for userDetailsModel: {}", userDetailsModel);
+      responseObject.setStatus(DynamicProfileStatusCode.USER_ALREADY_EXISTS);
+    }
     /*} else {
       logger.error("required field is null for userDetailsModel: {}", userDetailsModel);
       responseObject.setStatus(DynamicProfileStatusCode.NULL_FIELD);
@@ -113,7 +100,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserDetails userDetails = userDetailsRepo.fetchUser(id);
     UserDetailsModel userDetailsModel = new UserDetailsModel();
     userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
-    if (Objects.nonNull(userDetailsModel.getAuthDetailModel())){
+    if (Objects.nonNull(userDetailsModel.getAuthDetailModel())) {
       userDetailsModel.getAuthDetailModel().setPassword(null);
     }
 

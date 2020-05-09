@@ -56,7 +56,7 @@ public class AuthDetailModel {
         + ", password='" + password + '\'' + ", role=" + role + '\'' + '}';
   }
 
-  public Boolean validate(){
+  public Boolean validate() {
     if (Stream.of(email, userName, password, role).anyMatch(Objects::isNull)) {
       return Boolean.FALSE;
     }

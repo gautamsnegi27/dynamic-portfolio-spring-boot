@@ -12,5 +12,4 @@ public class DynamicPortfolioApplication {
     SpringApplication.run(DynamicPortfolioApplication.class, args);
   }
 
-
 }
