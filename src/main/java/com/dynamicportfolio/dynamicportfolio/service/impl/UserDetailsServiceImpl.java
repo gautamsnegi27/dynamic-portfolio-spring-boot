@@ -37,6 +37,7 @@ import java.util.Objects;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
   private Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+
   @Autowired
   private UserDetailsRepo userDetailsRepo;
 
@@ -75,6 +76,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userDetails.setName(userDetailsModel.getName());
         userDetails.setAuthDetail(authDetail);
 
+        logger.info("sequence number created: {}", userDetails.getId());
         UserDetails userDetailsInDb = userDetailsRepo.createUser(userDetails);
         AuthDetailModel authDetailModel = new AuthDetailModel();
         if (Objects.nonNull(userDetailsInDb) && Objects.nonNull(userDetailsInDb.getAuthDetail())) {
