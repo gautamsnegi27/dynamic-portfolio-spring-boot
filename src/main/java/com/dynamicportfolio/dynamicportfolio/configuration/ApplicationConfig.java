@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDbFactory;
 
@@ -18,7 +19,7 @@ public class ApplicationConfig{
   }
   @Bean
   public MongoTemplate getMongoTemplate()throws Exception {
-    MongoTemplate template = new MongoTemplate(mongoDbFactory());
-    return template;
+    return new MongoTemplate(mongoDbFactory());
   }
+
 }
