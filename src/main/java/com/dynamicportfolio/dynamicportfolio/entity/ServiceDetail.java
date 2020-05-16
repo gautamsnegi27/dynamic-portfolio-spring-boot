@@ -2,10 +2,12 @@ package com.dynamicportfolio.dynamicportfolio.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.validation.constraints.NotNull;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceDetail {
 
-  private Long id;
+  @NotNull(message = "field is mandatory")
   private String serviceName;
   private String serviceDescription;
 

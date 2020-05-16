@@ -2,11 +2,16 @@ package com.dynamicportfolio.dynamicportfolio.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.validation.constraints.NotNull;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExperienceDetail {
 
+  @NotNull(message = "field is mandatory")
   private Long from;
+  @NotNull(message = "field is mandatory")
   private Long to;
+  @NotNull(message = "field is mandatory")
   private String companyName;
   private String jobDescription;
 
@@ -43,13 +48,6 @@ public class ExperienceDetail {
   }
 
   public ExperienceDetail() {
-  }
-
-  public ExperienceDetail(Long from, Long to, String companyName, String jobDescription) {
-    this.from = from;
-    this.to = to;
-    this.companyName = companyName;
-    this.jobDescription = jobDescription;
   }
 
   @Override

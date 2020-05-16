@@ -41,6 +41,9 @@ public class ExperienceDetailModel {
     this.jobDescription = jobDescription;
   }
 
+  public ExperienceDetailModel() {
+  }
+
   @Override
   public String toString() {
     return "ExperienceDetailModel{" + "from=" + from + ", to=" + to + ", companyName='"

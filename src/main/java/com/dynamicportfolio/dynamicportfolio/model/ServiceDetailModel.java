@@ -4,17 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceDetailModel {
-  private Long id;
   private String serviceName;
   private String serviceDescription;
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
 
   public String getServiceName() {
     return serviceName;
@@ -32,9 +23,12 @@ public class ServiceDetailModel {
     this.serviceDescription = serviceDescription;
   }
 
+  public ServiceDetailModel() {
+  }
+
   @Override
   public String toString() {
-    return "ServiceDetailModel{" + "id=" + id + ", serviceName='" + serviceName + '\''
-        + ", serviceDescription='" + serviceDescription + '\'' + '}';
+    return "ServiceDetailModel{" + "serviceName='" + serviceName + '\'' + ", serviceDescription='"
+        + serviceDescription + '\'' + '}';
   }
 }

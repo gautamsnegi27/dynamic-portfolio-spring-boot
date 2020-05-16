@@ -32,12 +32,6 @@ public class SocialMediaDetails {
     this.instaUrl = instaUrl;
   }
 
-  public SocialMediaDetails(String fbUrl, String twitterUrl, String instaUrl) {
-    this.fbUrl = fbUrl;
-    this.twitterUrl = twitterUrl;
-    this.instaUrl = instaUrl;
-  }
-
   public SocialMediaDetails() {
   }
 

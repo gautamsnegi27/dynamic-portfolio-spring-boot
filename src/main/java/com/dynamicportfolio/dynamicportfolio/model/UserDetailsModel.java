@@ -10,8 +10,6 @@ public class UserDetailsModel {
   private Long id;
 
   private String description;
-  private String name;
-
   private AuthDetailModel authDetailModel;
   private SocialMediaDetailsModel socialMediaDetailsModel;
   private List<ServiceDetailModel> serviceDetailModels;
@@ -34,13 +32,6 @@ public class UserDetailsModel {
     this.description = description;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
 
   public AuthDetailModel getAuthDetailModel() {
     return authDetailModel;
@@ -83,10 +74,13 @@ public class UserDetailsModel {
   }
 
   public Boolean validate() {
-    if (null == name || Objects.isNull(authDetailModel) || !authDetailModel.validate()) {
+    if (Objects.isNull(authDetailModel) || !authDetailModel.validate()) {
       return Boolean.FALSE;
     }
     return Boolean.TRUE;
+  }
+
+  public UserDetailsModel() {
   }
 
   @Override

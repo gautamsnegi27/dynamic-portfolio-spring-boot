@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -20,16 +21,11 @@ public class AuthDetail {
   private String userName;
   @NotNull(message = "password is mandatory")
   private String password;
-  @NotNull(message = "role is mandatory")
-  private Roles role;
-
-  public Roles getRole() {
-    return role;
-  }
-
-  public void setRole(Roles role) {
-    this.role = role;
-  }
+  @NotNull(message = "name is mandatory")
+  private String firstName;
+  private String LastName;
+  @NotNull(message = "Should have some role")
+  private List<Roles> roles;
 
   public String getEmail() {
     return email;
@@ -55,11 +51,28 @@ public class AuthDetail {
     this.password = password;
   }
 
-  public AuthDetail(String email, String userName, String password, Roles role) {
-    this.email = email;
-    this.userName = userName;
-    this.password = password;
-    this.role = role;
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return LastName;
+  }
+
+  public void setLastName(String lastName) {
+    LastName = lastName;
+  }
+
+  public List<Roles> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Roles> roles) {
+    this.roles = roles;
   }
 
   public AuthDetail() {
@@ -68,6 +81,7 @@ public class AuthDetail {
   @Override
   public String toString() {
     return "AuthDetail{" + "email='" + email + '\'' + ", userName='" + userName + '\''
-        + ", password='" + password + '\'' + ", role='" + role + '\'' + '}';
+        + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", LastName='"
+        + LastName + '\'' + ", roles=" + roles + '}';
   }
 }

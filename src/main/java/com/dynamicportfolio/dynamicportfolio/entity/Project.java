@@ -2,20 +2,14 @@ package com.dynamicportfolio.dynamicportfolio.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.validation.constraints.NotNull;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Project {
 
-  private Long referenceOfService;
+  @NotNull(message = "field is mandatory")
   private String projectName;
   private String projectDescription;
-
-  public Long getReferenceOfService() {
-    return referenceOfService;
-  }
-
-  public void setReferenceOfService(Long referenceOfService) {
-    this.referenceOfService = referenceOfService;
-  }
 
   public String getProjectName() {
     return projectName;
@@ -33,9 +27,12 @@ public class Project {
     this.projectDescription = projectDescription;
   }
 
+  public Project() {
+  }
+
   @Override
   public String toString() {
-    return "Project{" + "referenceOfService='" + referenceOfService + '\'' + ", projectName='"
-        + projectName + '\'' + ", projectDescription='" + projectDescription + '\'' + '}';
+    return "Project{" + "projectName='" + projectName + '\'' + ", projectDescription='"
+        + projectDescription + '\'' + '}';
   }
 }

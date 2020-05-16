@@ -4,17 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProjectModel {
-  private Long referenceOfService;
   private String projectName;
   private String projectDescription;
-
-  public Long getReferenceOfService() {
-    return referenceOfService;
-  }
-
-  public void setReferenceOfService(Long referenceOfService) {
-    this.referenceOfService = referenceOfService;
-  }
 
   public String getProjectName() {
     return projectName;
@@ -32,9 +23,12 @@ public class ProjectModel {
     this.projectDescription = projectDescription;
   }
 
+  public ProjectModel() {
+  }
+
   @Override
   public String toString() {
-    return "ProjectModel{" + "referenceOfService=" + referenceOfService + ", projectName='"
-        + projectName + '\'' + ", projectDescription='" + projectDescription + '\'' + '}';
+    return "ProjectModel{" + "projectName='" + projectName + '\'' + ", projectDescription='"
+        + projectDescription + '\'' + '}';
   }
 }

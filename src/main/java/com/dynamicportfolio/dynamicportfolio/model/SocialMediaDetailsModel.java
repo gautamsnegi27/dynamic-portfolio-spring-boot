@@ -32,6 +32,9 @@ public class SocialMediaDetailsModel {
     this.instaUrl = instaUrl;
   }
 
+  public SocialMediaDetailsModel() {
+  }
+
   @Override
   public String toString() {
     return "SocialMediaDetailsModel{" + "fbUrl='" + fbUrl + '\'' + ", twitterUrl='" + twitterUrl

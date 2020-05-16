@@ -3,10 +3,8 @@ package com.dynamicportfolio.dynamicportfolio.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,10 +17,8 @@ public class UserDetails implements Serializable {
 
   @Id
   private Long id;
-
   private String description;
-  @NotNull(message = "name is mandatory")
-  private String name;
+
   private AuthDetail authDetail;
   private SocialMediaDetails socialMediaDetails;
   private List<ServiceDetail> serviceDetails;
@@ -45,13 +41,6 @@ public class UserDetails implements Serializable {
     this.description = description;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
 
   public AuthDetail getAuthDetail() {
     return authDetail;
@@ -94,20 +83,6 @@ public class UserDetails implements Serializable {
   }
 
   public UserDetails() {
-  }
-
-  public UserDetails(Long id, String description,
-      @NotNull(message = "name is mandatory") String name, AuthDetail authDetail,
-      SocialMediaDetails socialMediaDetails, List<ServiceDetail> serviceDetails,
-      List<Project> projects, List<ExperienceDetail> experienceDetails) {
-    this.id = id;
-    this.description = description;
-    this.name = name;
-    this.authDetail = authDetail;
-    this.socialMediaDetails = socialMediaDetails;
-    this.serviceDetails = serviceDetails;
-    this.projects = projects;
-    this.experienceDetails = experienceDetails;
   }
 
   @Override

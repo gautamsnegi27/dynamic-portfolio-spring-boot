@@ -41,17 +41,15 @@ public class UserDetailsRepoImpl implements UserDetailsRepo {
             .orOperator(Criteria.where("authDetail.email").is(email),
                 Criteria.where("authDetail.userName").is(userName)),
         Criteria.where("authDetail.password").is(password)));
-    UserDetails userDetails = mongoTemplate.findOne(query, UserDetails.class);
-    return userDetails;
+    return mongoTemplate.findOne(query, UserDetails.class);
   }
 
   @Override
   public List<UserDetails> findByAuthDetail_EmailOrAuthDetail_UserName(String email,
       String userName) {
     Query query = new Query();
-    query.addCriteria(new Criteria()
-            .orOperator(Criteria.where("authDetail.email").is(email),
-                Criteria.where("authDetail.userName").is(userName)));
+    query.addCriteria(new Criteria().orOperator(Criteria.where("authDetail.email").is(email),
+        Criteria.where("authDetail.userName").is(userName)));
     return mongoTemplate.find(query, UserDetails.class);
   }
 

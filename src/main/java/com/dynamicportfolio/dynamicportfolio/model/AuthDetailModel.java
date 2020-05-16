@@ -2,8 +2,11 @@ package com.dynamicportfolio.dynamicportfolio.model;
 
 import com.dynamicportfolio.dynamicportfolio.common.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -15,8 +18,11 @@ public class AuthDetailModel {
   private String userName;
   @NotBlank(message = "password is mandatory")
   private String password;
-  @NotBlank(message = "role is mandatory")
-  private Roles role;
+  @NotNull(message = "name is mandatory")
+  private String firstName;
+  private String LastName;
+  @NotNull(message = "Should have some role")
+  private List<Roles> roles;
 
   public String getEmail() {
     return email;
@@ -42,24 +48,45 @@ public class AuthDetailModel {
     this.password = password;
   }
 
-  public Roles getRole() {
-    return role;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setRole(Roles role) {
-    this.role = role;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return LastName;
+  }
+
+  public void setLastName(String lastName) {
+    LastName = lastName;
+  }
+
+  public List<Roles> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Roles> roles) {
+    this.roles = roles;
+  }
+
+  public AuthDetailModel() {
+  }
+
+  public Boolean validate() {
+    if (Stream.of(email, userName, password).anyMatch(Objects::isNull) || CollectionUtils
+        .isEmpty(roles)) {
+      return Boolean.FALSE;
+    }
+    return Boolean.TRUE;
   }
 
   @Override
   public String toString() {
     return "AuthDetailModel{" + "email='" + email + '\'' + ", userName='" + userName + '\''
-        + ", password='" + password + '\'' + ", role=" + role + '\'' + '}';
-  }
-
-  public Boolean validate() {
-    if (Stream.of(email, userName, password, role).anyMatch(Objects::isNull)) {
-      return Boolean.FALSE;
-    }
-    return Boolean.TRUE;
+        + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", LastName='"
+        + LastName + '\'' + ", roles=" + roles + '}';
   }
 }

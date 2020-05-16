@@ -16,6 +16,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	compile('org.apache.commons:commons-collections4:4.1')
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

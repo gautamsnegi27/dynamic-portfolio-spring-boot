@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,13 +44,17 @@ import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusC
 
 
 @Service("com.dynamicportfolio.dynamicportfolio.service.impl.UserDetailsServiceImpl")
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService,
+    org.springframework.security.core.userdetails.UserDetailsService {
 
   private Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
   @Autowired
   @Qualifier("com.dynamicportfolio.dynamicportfolio.repo.impl.UserDetailsRepoImpl")
   private UserDetailsRepo userDetailsRepo;
+
+  @Autowired
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   @Qualifier("com.dynamicportfolio.dynamicportfolio.service.impl.SequenceGeneratorServiceImpl")
@@ -69,12 +75,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         logger.error("user already exists for userDetailsModel: {}", userDetailsModel);
         responseObject.setStatus(USER_ALREADY_EXIST);
       } else {
-        UserDetails userDetails = new UserDetails();
-
         AuthDetail authDetail = new AuthDetail();
+        userDetailsModel.getAuthDetailModel().setPassword(
+            bCryptPasswordEncoder.encode(userDetailsModel.getAuthDetailModel().getPassword()));
         BeanUtils.copyProperties(userDetailsModel.getAuthDetailModel(), authDetail);
+        UserDetails userDetails = new UserDetails();
         userDetails.setId(sequenceGeneratorService.generateSequence(UserDetails.SEQUENCE_NAME));
-        userDetails.setName(userDetailsModel.getName());
         userDetails.setAuthDetail(authDetail);
 
         logger.info("sequence number created: {}", userDetails.getId());
@@ -87,7 +93,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
           UserDetailsModel userDetailsModelResponse = new UserDetailsModel();
           userDetailsModelResponse.setAuthDetailModel(authDetailModel);
           userDetailsModelResponse.setId(userDetailsInDb.getId());
-          userDetailsModelResponse.setName(userDetailsInDb.getName());
 
           responseObject.setResponseObject(userDetailsModelResponse);
           responseObject.setStatus(SUCCESS);
@@ -111,9 +116,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserDetails userDetails = userDetailsRepo.fetchUser(id);
     UserDetailsModel userDetailsModel = new UserDetailsModel();
     userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
-    if (Objects.nonNull(userDetailsModel.getAuthDetailModel())) {
-      userDetailsModel.getAuthDetailModel().setPassword(null);
-    }
 
     responseObject.setResponseObject(userDetailsModel);
     responseObject.setStatus(SUCCESS);
@@ -128,10 +130,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     DynamicProfileResponseObject<UserDetailsModel> responseObject =
         new DynamicProfileResponseObject<>(PROCESSING_ERROR);
     UserDetails userDetails = userDetailsRepo.
-        findByEmailAndUserNameAndPassword(authDetailModel.getEmail(), authDetailModel.getUserName(),
-            authDetailModel.getPassword());
-
-    if (Objects.nonNull(userDetails)) {
+        fetchUserByUserName(authDetailModel.getUserName());
+    if (Objects.nonNull(userDetails) && bCryptPasswordEncoder
+        .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword())) {
       UserDetailsModel userDetailsModel = new UserDetailsModel();
       userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
       responseObject.setResponseObject(userDetailsModel);
@@ -176,6 +177,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     List<ProjectModel> projectModels;
     List<ExperienceDetailModel> experienceDetailModels;
 
+    userDetailsModel.setDescription(userDetails.getDescription());
+    if (Objects.nonNull(userDetails.getId())) {
+      userDetailsModel.setId(userDetails.getId());
+    }
+
+    if (Objects.nonNull(userDetails.getAuthDetail())) {
+      AuthDetailModel authDetailModel = new AuthDetailModel();
+      BeanUtils.copyProperties(userDetails.getAuthDetail(), authDetailModel);
+      authDetailModel.setPassword(null);
+      userDetailsModel.setAuthDetailModel(authDetailModel);
+    }
+
+    if (Objects.nonNull(userDetails.getSocialMediaDetails())) {
+      socialMediaDetailsModel = new SocialMediaDetailsModel();
+      BeanUtils.copyProperties(userDetails.getSocialMediaDetails(), socialMediaDetailsModel);
+      userDetailsModel.setSocialMediaDetailsModel(socialMediaDetailsModel);
+    }
 
     if (CollectionUtils.isNotEmpty(userDetails.getServiceDetails())) {
       serviceDetailModels = new ArrayList<>();
@@ -206,16 +224,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       });
       userDetailsModel.setExperienceDetailModels(experienceDetailModels);
     }
-    if (Objects.nonNull(userDetails.getSocialMediaDetails())) {
-      socialMediaDetailsModel = new SocialMediaDetailsModel();
-      BeanUtils.copyProperties(userDetails.getSocialMediaDetails(), socialMediaDetailsModel);
-      userDetailsModel.setSocialMediaDetailsModel(socialMediaDetailsModel);
-    }
-    userDetailsModel.setName(userDetails.getName());
-    userDetailsModel.setDescription(userDetails.getDescription());
-    if (Objects.nonNull(userDetails.getId())) {
-      userDetailsModel.setId(userDetails.getId());
-    }
     return userDetailsModel;
   }
 
@@ -229,7 +237,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         .isNotBlank(userDetailsModel.getAuthDetailModel().getUserName())) {
       if (username.equals(userDetailsModel.getAuthDetailModel().getUserName())) {
         UserDetails userDetails = userDetailsRepo.fetchUserByUserName(username);
-        if (Objects.nonNull(userDetails.getAuthDetail().getRole())) {
+        if (CollectionUtils.isNotEmpty(userDetails.getAuthDetail().getRoles())) {
           userDetails = setUserDetails(userDetailsModel, userDetails);
 
           userDetails = userDetailsRepo.save(userDetails);
@@ -258,6 +266,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     List<ServiceDetail> serviceDetails;
     List<Project> projects;
     List<ExperienceDetail> experienceDetails;
+
+    if (StringUtils.isNotBlank(userDetailsModel.getDescription())) {
+      userDetails.setDescription(userDetailsModel.getDescription());
+    }
 
     if (CollectionUtils.isNotEmpty(userDetailsModel.getServiceDetailModels())) {
       serviceDetails = new ArrayList<>();
@@ -295,15 +307,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       userDetails.setSocialMediaDetails(socialMediaDetails);
     }
 
-    if (StringUtils.isNotBlank(userDetailsModel.getName())) {
-      userDetails.setName(userDetailsModel.getName());
-    }
-
-    if (StringUtils.isNotBlank(userDetailsModel.getDescription())) {
-      userDetails.setName(userDetailsModel.getDescription());
-    }
     return userDetails;
   }
 
-
+  @Override
+  public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(
+      String username) throws UsernameNotFoundException {
+    return null;
+  }
 }
