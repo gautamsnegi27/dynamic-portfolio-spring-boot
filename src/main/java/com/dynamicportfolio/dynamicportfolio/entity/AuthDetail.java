@@ -1,13 +1,11 @@
 package com.dynamicportfolio.dynamicportfolio.entity;
 
 
-import com.dynamicportfolio.dynamicportfolio.common.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,8 +22,6 @@ public class AuthDetail {
   @NotNull(message = "name is mandatory")
   private String firstName;
   private String LastName;
-  @NotNull(message = "Should have some role")
-  private List<Roles> roles;
 
   public String getEmail() {
     return email;
@@ -67,13 +63,6 @@ public class AuthDetail {
     LastName = lastName;
   }
 
-  public List<Roles> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(List<Roles> roles) {
-    this.roles = roles;
-  }
 
   public AuthDetail() {
   }
@@ -82,6 +71,6 @@ public class AuthDetail {
   public String toString() {
     return "AuthDetail{" + "email='" + email + '\'' + ", userName='" + userName + '\''
         + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", LastName='"
-        + LastName + '\'' + ", roles=" + roles + '}';
+        + LastName + '\'' + '}';
   }
 }

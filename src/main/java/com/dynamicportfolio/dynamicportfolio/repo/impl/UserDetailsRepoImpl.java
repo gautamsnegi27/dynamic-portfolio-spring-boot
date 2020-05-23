@@ -3,7 +3,6 @@ package com.dynamicportfolio.dynamicportfolio.repo.impl;
 import com.dynamicportfolio.dynamicportfolio.entity.UserDetails;
 import com.dynamicportfolio.dynamicportfolio.repo.UserDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -12,8 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-@Repository
-@Qualifier("com.dynamicportfolio.dynamicportfolio.repo.impl.UserDetailsRepoImpl")
+@Repository("com.dynamicportfolio.dynamicportfolio.repo.impl.UserDetailsRepoImpl")
 public class UserDetailsRepoImpl implements UserDetailsRepo {
 
   private final MongoTemplate mongoTemplate;

@@ -1,7 +1,10 @@
 package com.dynamicportfolio.dynamicportfolio.model;
 
+import com.dynamicportfolio.dynamicportfolio.common.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.collections4.CollectionUtils;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +18,8 @@ public class UserDetailsModel {
   private List<ServiceDetailModel> serviceDetailModels;
   private List<ProjectModel> projectModels;
   private List<ExperienceDetailModel> experienceDetailModels;
+  @NotNull(message = "Should have some role")
+  private List<Roles> roles;
 
   public Long getId() {
     return id;
@@ -73,8 +78,17 @@ public class UserDetailsModel {
     this.experienceDetailModels = experienceDetailModels;
   }
 
+  public List<Roles> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Roles> roles) {
+    this.roles = roles;
+  }
+
   public Boolean validate() {
-    if (Objects.isNull(authDetailModel) || !authDetailModel.validate()) {
+    if (CollectionUtils.isEmpty(roles) || Objects.isNull(authDetailModel) || !authDetailModel
+        .validate()) {
       return Boolean.FALSE;
     }
     return Boolean.TRUE;
@@ -89,6 +103,6 @@ public class UserDetailsModel {
         + ", authDetailModel=" + authDetailModel + ", socialMediaDetailsModel="
         + socialMediaDetailsModel + ", serviceDetailModels=" + serviceDetailModels
         + ", projectModels=" + projectModels + ", experienceDetailModels=" + experienceDetailModels
-        + '}';
+        + ", roles=" + roles + '}';
   }
 }

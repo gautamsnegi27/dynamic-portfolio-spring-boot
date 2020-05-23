@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,6 @@ import java.util.Objects;
 
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.EMAIL_ALREADY_EXISTS;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.INVALID_ACCESS;
-import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.INVALID_DETAILS;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.NULL_FIELD;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.PROCESSING_ERROR;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.SUCCESS;
@@ -75,14 +75,14 @@ public class UserDetailsServiceImpl implements UserDetailsService,
         logger.error("user already exists for userDetailsModel: {}", userDetailsModel);
         responseObject.setStatus(USER_ALREADY_EXIST);
       } else {
+        UserDetails userDetails = new UserDetails();
         AuthDetail authDetail = new AuthDetail();
         userDetailsModel.getAuthDetailModel().setPassword(
             bCryptPasswordEncoder.encode(userDetailsModel.getAuthDetailModel().getPassword()));
         BeanUtils.copyProperties(userDetailsModel.getAuthDetailModel(), authDetail);
-        UserDetails userDetails = new UserDetails();
+        BeanUtils.copyProperties(userDetailsModel, userDetails);
         userDetails.setId(sequenceGeneratorService.generateSequence(UserDetails.SEQUENCE_NAME));
         userDetails.setAuthDetail(authDetail);
-
         logger.info("sequence number created: {}", userDetails.getId());
         UserDetails userDetailsInDb = userDetailsRepo.createUser(userDetails);
         AuthDetailModel authDetailModel = new AuthDetailModel();
@@ -124,24 +124,18 @@ public class UserDetailsServiceImpl implements UserDetailsService,
   }
 
   @Override
-  public DynamicProfileResponseObject<UserDetailsModel> getUser(AuthDetailModel authDetailModel) {
+  public void getUser(AuthDetailModel authDetailModel) {
     logger.info("request came to fetch email: {}, username: {}", authDetailModel.getEmail(),
         authDetailModel.getUserName());
     DynamicProfileResponseObject<UserDetailsModel> responseObject =
         new DynamicProfileResponseObject<>(PROCESSING_ERROR);
     UserDetails userDetails = userDetailsRepo.
         fetchUserByUserName(authDetailModel.getUserName());
-    if (Objects.nonNull(userDetails) && bCryptPasswordEncoder
-        .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword())) {
-      UserDetailsModel userDetailsModel = new UserDetailsModel();
-      userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
-      responseObject.setResponseObject(userDetailsModel);
-      responseObject.setStatus(SUCCESS);
-    } else {
+    if (!(Objects.nonNull(userDetails) && bCryptPasswordEncoder
+        .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword()))) {
       logger.error("invalid user details for authDetailModel: {}", authDetailModel);
-      responseObject.setStatus(INVALID_DETAILS);
+      throw new BadCredentialsException(USER_DOES_NOT_EXIST.getDesc());
     }
-    return responseObject;
   }
 
   @Override
@@ -237,7 +231,7 @@ public class UserDetailsServiceImpl implements UserDetailsService,
         .isNotBlank(userDetailsModel.getAuthDetailModel().getUserName())) {
       if (username.equals(userDetailsModel.getAuthDetailModel().getUserName())) {
         UserDetails userDetails = userDetailsRepo.fetchUserByUserName(username);
-        if (CollectionUtils.isNotEmpty(userDetails.getAuthDetail().getRoles())) {
+        if (Objects.nonNull(userDetails.getAuthDetail())) {
           userDetails = setUserDetails(userDetailsModel, userDetails);
 
           userDetails = userDetailsRepo.save(userDetails);
@@ -270,6 +264,8 @@ public class UserDetailsServiceImpl implements UserDetailsService,
     if (StringUtils.isNotBlank(userDetailsModel.getDescription())) {
       userDetails.setDescription(userDetailsModel.getDescription());
     }
+
+    userDetails.setRoles(userDetailsModel.getRoles());
 
     if (CollectionUtils.isNotEmpty(userDetailsModel.getServiceDetailModels())) {
       serviceDetails = new ArrayList<>();

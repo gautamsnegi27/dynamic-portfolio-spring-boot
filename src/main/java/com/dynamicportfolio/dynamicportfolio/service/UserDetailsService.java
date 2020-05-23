@@ -9,7 +9,7 @@ public interface UserDetailsService {
 
   DynamicProfileResponseObject<UserDetailsModel> fetchUser(Long id);
 
-  DynamicProfileResponseObject<UserDetailsModel> getUser(AuthDetailModel authDetailModel);
+  void getUser(AuthDetailModel authDetailModel);
 
   DynamicProfileResponseObject<UserDetailsModel> fetchUserByEmail(String email);
 

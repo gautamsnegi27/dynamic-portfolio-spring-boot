@@ -1,10 +1,12 @@
 package com.dynamicportfolio.dynamicportfolio.entity;
 
+import com.dynamicportfolio.dynamicportfolio.common.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class UserDetails implements Serializable {
   private List<ServiceDetail> serviceDetails;
   private List<Project> projects;
   private List<ExperienceDetail> experienceDetails;
+  @NotNull(message = "Should have some role")
+  private List<Roles> roles;
 
   public Long getId() {
     return id;
@@ -40,7 +44,6 @@ public class UserDetails implements Serializable {
   public void setDescription(String description) {
     this.description = description;
   }
-
 
   public AuthDetail getAuthDetail() {
     return authDetail;
@@ -82,6 +85,14 @@ public class UserDetails implements Serializable {
     this.experienceDetails = experienceDetails;
   }
 
+  public List<Roles> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Roles> roles) {
+    this.roles = roles;
+  }
+
   public UserDetails() {
   }
 
@@ -90,6 +101,6 @@ public class UserDetails implements Serializable {
     return "UserDetails{" + "id=" + id + ", description='" + description + '\'' + ", authDetail="
         + authDetail + ", socialMediaDetails=" + socialMediaDetails + ", serviceDetails="
         + serviceDetails + ", projects=" + projects + ", experienceDetails=" + experienceDetails
-        + '}';
+        + ", roles=" + roles + '}';
   }
 }
