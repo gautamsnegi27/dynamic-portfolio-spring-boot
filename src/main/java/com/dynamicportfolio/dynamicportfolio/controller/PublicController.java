@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,19 +61,15 @@ public class PublicController {
 
   @PostMapping("/login")
   ResponseEntity<?> login(
-      @RequestBody AuthDetailModel authDetailModel) throws Exception {
+      @RequestBody AuthDetailModel authDetailModel) {
     logger
         .info("Received request for login with email: {}, userName: {}", authDetailModel.getEmail(),
             authDetailModel.getUserName());
-    DynamicProfileResponseObject<UserDetailsModel> responseObject;
-    try {
-      userDetailsService.getUser(authDetailModel);
-    } catch (BadCredentialsException e) {
-      throw new Exception(e);
+    String jwtToken = null;
+    if (userDetailsService.getUser(authDetailModel)) {
+      UserDetails userDetails = customUserDetailsService.loadUserByUsername(authDetailModel.getUserName());
+      jwtToken = jwtUtil.generateToken(userDetails);
     }
-    UserDetails userDetails =
-        customUserDetailsService.loadUserByUsername(authDetailModel.getUserName());
-    String jwtToken = jwtUtil.generateToken(userDetails);
     return new ResponseEntity<>(new AuthResponse(jwtToken), HttpStatus.OK);
   }
 

@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -124,18 +123,20 @@ public class UserDetailsServiceImpl implements UserDetailsService,
   }
 
   @Override
-  public void getUser(AuthDetailModel authDetailModel) {
+  public Boolean getUser(AuthDetailModel authDetailModel) {
     logger.info("request came to fetch email: {}, username: {}", authDetailModel.getEmail(),
         authDetailModel.getUserName());
-    DynamicProfileResponseObject<UserDetailsModel> responseObject =
-        new DynamicProfileResponseObject<>(PROCESSING_ERROR);
+    Boolean status;
     UserDetails userDetails = userDetailsRepo.
         fetchUserByUserName(authDetailModel.getUserName());
     if (!(Objects.nonNull(userDetails) && bCryptPasswordEncoder
         .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword()))) {
       logger.error("invalid user details for authDetailModel: {}", authDetailModel);
-      throw new BadCredentialsException(USER_DOES_NOT_EXIST.getDesc());
+      status = Boolean.FALSE;
+    } else {
+      status = Boolean.TRUE;
     }
+    return status;
   }
 
   @Override
