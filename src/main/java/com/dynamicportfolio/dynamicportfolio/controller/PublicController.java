@@ -60,14 +60,14 @@ public class PublicController {
   }
 
   @PostMapping("/login")
-  ResponseEntity<?> login(
-      @RequestBody AuthDetailModel authDetailModel) {
+  ResponseEntity<?> login(@RequestBody AuthDetailModel authDetailModel) {
     logger
         .info("Received request for login with email: {}, userName: {}", authDetailModel.getEmail(),
             authDetailModel.getUserName());
     String jwtToken = null;
     if (userDetailsService.getUser(authDetailModel)) {
-      UserDetails userDetails = customUserDetailsService.loadUserByUsername(authDetailModel.getUserName());
+      UserDetails userDetails =
+          customUserDetailsService.loadUserByUsername(authDetailModel.getUserName());
       jwtToken = jwtUtil.generateToken(userDetails);
     }
     return new ResponseEntity<>(new AuthResponse(jwtToken), HttpStatus.OK);
@@ -84,10 +84,20 @@ public class PublicController {
         throw new Exception("user not found with id: " + id);
       }
     } catch (Exception e) {
-      logger.error("exception occurred due to: {}", e.getLocalizedMessage());
+      logger.error("exception occurred due to: " + e.getLocalizedMessage());
       responseObject = new DynamicProfileResponseObject<>();
-      responseObject.setStatus(DynamicProfileStatusCode.INVALID_ACCESS);
+      responseObject.setStatus(DynamicProfileStatusCode.USER_DOES_NOT_EXIST);
     }
+    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
+  }
+
+  @GetMapping("/user/:user")
+  @RequestMapping(method = RequestMethod.GET, value = "/user/{user}")
+  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> getByUserName(
+      @PathVariable("user") String user) {
+    Boolean status = Boolean.FALSE;
+    DynamicProfileResponseObject<UserDetailsModel>
+        responseObject = userDetailsService.fetchByUserName(user);
     return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
   }
 }

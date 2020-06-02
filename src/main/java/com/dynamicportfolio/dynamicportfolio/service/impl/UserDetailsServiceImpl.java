@@ -39,7 +39,6 @@ import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusC
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.SUCCESS;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.USER_ALREADY_EXIST;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.USER_DOES_NOT_EXIST;
-import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.USER_NAME_ALREADY_EXISTS;
 
 
 @Service("com.dynamicportfolio.dynamicportfolio.service.impl.UserDetailsServiceImpl")
@@ -158,10 +157,11 @@ public class UserDetailsServiceImpl implements UserDetailsService,
         new DynamicProfileResponseObject<>();
     UserDetails userDetails = userDetailsRepo.fetchUserByUserName(userName);
     if (Objects.nonNull(userDetails)) {
-      responseObject.setStatus(USER_NAME_ALREADY_EXISTS);
-    } else {
-      responseObject.setStatus(SUCCESS);
+      UserDetailsModel userDetailsModel = new UserDetailsModel();
+      userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
+      responseObject.setResponseObject(userDetailsModel);
     }
+    responseObject.setStatus(SUCCESS);
     return responseObject;
   }
 
@@ -172,7 +172,13 @@ public class UserDetailsServiceImpl implements UserDetailsService,
     List<ProjectModel> projectModels;
     List<ExperienceDetailModel> experienceDetailModels;
 
-    userDetailsModel.setDescription(userDetails.getDescription());
+    if (Objects.nonNull(userDetails.getDescription())) {
+      userDetailsModel.setDescription(userDetails.getDescription());
+    }
+    if (Objects.nonNull(userDetails.getDesignation())) {
+      userDetailsModel.setDesignation(userDetails.getDesignation());
+    }
+
     if (Objects.nonNull(userDetails.getId())) {
       userDetailsModel.setId(userDetails.getId());
     }
@@ -262,11 +268,25 @@ public class UserDetailsServiceImpl implements UserDetailsService,
     List<Project> projects;
     List<ExperienceDetail> experienceDetails;
 
+    if (Objects.nonNull(userDetailsModel.getDesignation())) {
+      userDetails.setDesignation(userDetailsModel.getDesignation());
+    }
     if (StringUtils.isNotBlank(userDetailsModel.getDescription())) {
       userDetails.setDescription(userDetailsModel.getDescription());
     }
 
-    userDetails.setRoles(userDetailsModel.getRoles());
+    if (Objects.nonNull(userDetailsModel.getAuthDetailModel().getFirstName())) {
+      userDetails.getAuthDetail()
+          .setFirstName(userDetailsModel.getAuthDetailModel().getFirstName());
+    }
+
+    if (Objects.nonNull(userDetailsModel.getAuthDetailModel().getLastName())) {
+      userDetails.getAuthDetail().setLastName(userDetailsModel.getAuthDetailModel().getLastName());
+    }
+
+    if (CollectionUtils.isNotEmpty(userDetailsModel.getRoles())) {
+      userDetails.setRoles(userDetailsModel.getRoles());
+    }
 
     if (CollectionUtils.isNotEmpty(userDetailsModel.getServiceDetailModels())) {
       serviceDetails = new ArrayList<>();
