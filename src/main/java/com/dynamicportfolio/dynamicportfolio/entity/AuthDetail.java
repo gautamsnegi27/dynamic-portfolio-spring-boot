@@ -21,7 +21,7 @@ public class AuthDetail {
   private String password;
   @NotNull(message = "name is mandatory")
   private String firstName;
-  private String LastName;
+  private String lastName;
 
   public String getEmail() {
     return email;
@@ -56,11 +56,11 @@ public class AuthDetail {
   }
 
   public String getLastName() {
-    return LastName;
+    return lastName;
   }
 
   public void setLastName(String lastName) {
-    LastName = lastName;
+    this.lastName = lastName;
   }
 
 
@@ -70,7 +70,7 @@ public class AuthDetail {
   @Override
   public String toString() {
     return "AuthDetail{" + "email='" + email + '\'' + ", userName='" + userName + '\''
-        + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", LastName='"
-        + LastName + '\'' + '}';
+        + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", lastName='"
+        + lastName + '\'' + '}';
   }
 }

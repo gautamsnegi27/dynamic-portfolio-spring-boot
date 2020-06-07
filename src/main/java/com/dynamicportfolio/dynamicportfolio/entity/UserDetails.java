@@ -20,7 +20,7 @@ public class UserDetails implements Serializable {
   @Id
   private Long id;
   private String description;
-
+  private String designation;
   private AuthDetail authDetail;
   private SocialMediaDetails socialMediaDetails;
   private List<ServiceDetail> serviceDetails;
@@ -43,6 +43,14 @@ public class UserDetails implements Serializable {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getDesignation() {
+    return designation;
+  }
+
+  public void setDesignation(String designation) {
+    this.designation = designation;
   }
 
   public AuthDetail getAuthDetail() {

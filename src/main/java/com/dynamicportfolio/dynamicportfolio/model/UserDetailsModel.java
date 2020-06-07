@@ -13,6 +13,7 @@ public class UserDetailsModel {
   private Long id;
 
   private String description;
+  private String designation;
   private AuthDetailModel authDetailModel;
   private SocialMediaDetailsModel socialMediaDetailsModel;
   private List<ServiceDetailModel> serviceDetailModels;
@@ -104,5 +105,13 @@ public class UserDetailsModel {
         + socialMediaDetailsModel + ", serviceDetailModels=" + serviceDetailModels
         + ", projectModels=" + projectModels + ", experienceDetailModels=" + experienceDetailModels
         + ", roles=" + roles + '}';
+  }
+
+  public String getDesignation() {
+    return designation;
+  }
+
+  public void setDesignation(String designation) {
+    this.designation = designation;
   }
 }

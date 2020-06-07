@@ -4,24 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExperienceDetailModel {
-  private Long from;
-  private Long to;
+  private String from;
+  private String to;
   private String companyName;
   private String jobDescription;
 
-  public Long getFrom() {
+  public String getFrom() {
     return from;
   }
 
-  public void setFrom(Long from) {
+  public void setFrom(String from) {
     this.from = from;
   }
 
-  public Long getTo() {
+  public String getTo() {
     return to;
   }
 
-  public void setTo(Long to) {
+  public void setTo(String to) {
     this.to = to;
   }
 

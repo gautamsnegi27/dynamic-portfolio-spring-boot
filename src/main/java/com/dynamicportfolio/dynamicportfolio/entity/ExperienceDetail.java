@@ -7,27 +7,24 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExperienceDetail {
 
-  @NotNull(message = "field is mandatory")
-  private Long from;
-  @NotNull(message = "field is mandatory")
-  private Long to;
-  @NotNull(message = "field is mandatory")
-  private String companyName;
+  private @NotNull(message = "field is mandatory") String from;
+  private @NotNull(message = "field is mandatory") String to;
+  @NotNull(message = "field is mandatory") private String companyName;
   private String jobDescription;
 
-  public Long getFrom() {
+  public @NotNull(message = "field is mandatory") String getFrom() {
     return from;
   }
 
-  public void setFrom(Long from) {
+  public void setFrom(@NotNull(message = "field is mandatory") String from) {
     this.from = from;
   }
 
-  public Long getTo() {
+  public @NotNull(message = "field is mandatory") String getTo() {
     return to;
   }
 
-  public void setTo(Long to) {
+  public void setTo(@NotNull(message = "field is mandatory") String to) {
     this.to = to;
   }
 

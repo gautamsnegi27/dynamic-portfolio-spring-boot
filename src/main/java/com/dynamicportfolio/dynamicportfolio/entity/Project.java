@@ -10,6 +10,8 @@ public class Project {
   @NotNull(message = "field is mandatory")
   private String projectName;
   private String projectDescription;
+  private String projectImage;
+  private String projectLink;
 
   public String getProjectName() {
     return projectName;
@@ -27,12 +29,29 @@ public class Project {
     this.projectDescription = projectDescription;
   }
 
+  public String getProjectImage() {
+    return projectImage;
+  }
+
+  public void setProjectImage(String projectImage) {
+    this.projectImage = projectImage;
+  }
+
+  public String getProjectLink() {
+    return projectLink;
+  }
+
+  public void setProjectLink(String projectLink) {
+    this.projectLink = projectLink;
+  }
+
   public Project() {
   }
 
   @Override
   public String toString() {
     return "Project{" + "projectName='" + projectName + '\'' + ", projectDescription='"
-        + projectDescription + '\'' + '}';
+        + projectDescription + '\'' + ", projectImage='" + projectImage + '\'' + ", projectLink='"
+        + projectLink + '\'' + '}';
   }
 }

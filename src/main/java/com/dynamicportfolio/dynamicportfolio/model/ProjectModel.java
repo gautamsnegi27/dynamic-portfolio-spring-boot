@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class ProjectModel {
   private String projectName;
   private String projectDescription;
+  private String projectImage;
+  private String projectLink;
 
   public String getProjectName() {
     return projectName;
@@ -23,12 +25,29 @@ public class ProjectModel {
     this.projectDescription = projectDescription;
   }
 
+  public String getProjectImage() {
+    return projectImage;
+  }
+
+  public void setProjectImage(String projectImage) {
+    this.projectImage = projectImage;
+  }
+
+  public String getProjectLink() {
+    return projectLink;
+  }
+
+  public void setProjectLink(String projectLink) {
+    this.projectLink = projectLink;
+  }
+
   public ProjectModel() {
   }
 
   @Override
   public String toString() {
     return "ProjectModel{" + "projectName='" + projectName + '\'' + ", projectDescription='"
-        + projectDescription + '\'' + '}';
+        + projectDescription + '\'' + ", projectImage='" + projectImage + '\'' + ", projectLink='"
+        + projectLink + '\'' + '}';
   }
 }

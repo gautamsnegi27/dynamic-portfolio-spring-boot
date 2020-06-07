@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SocialMediaDetailsModel {
   private String fbUrl;
-  private String twitterUrl;
   private String instaUrl;
+  private String linkedinUrl;
 
   public String getFbUrl() {
     return fbUrl;
@@ -14,14 +14,6 @@ public class SocialMediaDetailsModel {
 
   public void setFbUrl(String fbUrl) {
     this.fbUrl = fbUrl;
-  }
-
-  public String getTwitterUrl() {
-    return twitterUrl;
-  }
-
-  public void setTwitterUrl(String twitterUrl) {
-    this.twitterUrl = twitterUrl;
   }
 
   public String getInstaUrl() {
@@ -32,12 +24,20 @@ public class SocialMediaDetailsModel {
     this.instaUrl = instaUrl;
   }
 
+  public String getLinkedinUrl() {
+    return linkedinUrl;
+  }
+
+  public void setLinkedinUrl(String linkedinUrl) {
+    this.linkedinUrl = linkedinUrl;
+  }
+
   public SocialMediaDetailsModel() {
   }
 
   @Override
   public String toString() {
-    return "SocialMediaDetailsModel{" + "fbUrl='" + fbUrl + '\'' + ", twitterUrl='" + twitterUrl
-        + '\'' + ", instaUrl='" + instaUrl + '\'' + '}';
+    return "SocialMediaDetailsModel{" + "fbUrl='" + fbUrl + '\'' + ", instaUrl='" + instaUrl
+        + '\'' + ", linkedinUrl='" + linkedinUrl + '\'' + '}';
   }
 }
