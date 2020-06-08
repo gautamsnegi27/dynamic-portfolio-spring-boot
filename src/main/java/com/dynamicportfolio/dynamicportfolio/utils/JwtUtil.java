@@ -3,6 +3,7 @@ package com.dynamicportfolio.dynamicportfolio.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,9 @@ import java.util.function.Function;
 
 @Service("com.dynamicportfolio.dynamicportfolio.utils.JwtUtil")
 public class JwtUtil {
-  private String SECRET_KEY = "dynamic_profile";
+
+  @Value("${spring.data.mongodb.secret}")
+  private String SECRET_KEY;
 
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
