@@ -95,9 +95,17 @@ public class PublicController {
   @RequestMapping(method = RequestMethod.GET, value = "/user/{user}")
   ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> getByUserName(
       @PathVariable("user") String user) {
-    Boolean status = Boolean.FALSE;
     DynamicProfileResponseObject<UserDetailsModel>
         responseObject = userDetailsService.fetchByUserName(user);
+    return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
+  }
+
+  @GetMapping("/email/:email")
+  @RequestMapping(method = RequestMethod.GET, value = "/email/{email}")
+  ResponseEntity<DynamicProfileResponseObject<UserDetailsModel>> getByEmail(
+      @PathVariable("email") String email) {
+    DynamicProfileResponseObject<UserDetailsModel>
+        responseObject = userDetailsService.fetchUserByEmail(email);
     return new ResponseEntity<>(responseObject, responseObject.getStatusCode());
   }
 }
