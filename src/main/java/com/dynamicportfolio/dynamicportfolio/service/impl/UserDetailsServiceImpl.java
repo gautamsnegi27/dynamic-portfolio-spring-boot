@@ -1,6 +1,7 @@
 package com.dynamicportfolio.dynamicportfolio.service.impl;
 
 
+import com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode;
 import com.dynamicportfolio.dynamicportfolio.entity.AuthDetail;
 import com.dynamicportfolio.dynamicportfolio.entity.ExperienceDetail;
 import com.dynamicportfolio.dynamicportfolio.entity.Project;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.EMAIL_ALREADY_EXISTS;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.INVALID_ACCESS;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.NULL_FIELD;
 import static com.dynamicportfolio.dynamicportfolio.common.DynamicProfileStatusCode.PROCESSING_ERROR;
@@ -142,12 +142,16 @@ public class UserDetailsServiceImpl implements UserDetailsService,
   public DynamicProfileResponseObject<UserDetailsModel> fetchUserByEmail(String email) {
     DynamicProfileResponseObject<UserDetailsModel> responseObject =
         new DynamicProfileResponseObject<>();
-    UserDetails userDetails = userDetailsRepo.fetchUserByEmail(email);
+    UserDetails userDetails = userDetailsRepo.fetchUserByEmail(StringUtils.trim(email));
     if (Objects.nonNull(userDetails)) {
-      responseObject.setStatus(EMAIL_ALREADY_EXISTS);
+      UserDetailsModel userDetailsModel = new UserDetailsModel();
+      userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
+      responseObject.setResponseObject(userDetailsModel);
+      responseObject.setStatus(DynamicProfileStatusCode.USER_ALREADY_EXIST);
     } else {
-      responseObject.setStatus(SUCCESS);
+      responseObject.setStatus(DynamicProfileStatusCode.USER_DOES_NOT_EXIST);
     }
+
     return responseObject;
   }
 
@@ -155,13 +159,15 @@ public class UserDetailsServiceImpl implements UserDetailsService,
   public DynamicProfileResponseObject<UserDetailsModel> fetchByUserName(String userName) {
     DynamicProfileResponseObject<UserDetailsModel> responseObject =
         new DynamicProfileResponseObject<>();
-    UserDetails userDetails = userDetailsRepo.fetchUserByUserName(userName);
+    UserDetails userDetails = userDetailsRepo.fetchUserByUserName(StringUtils.trim(userName));
     if (Objects.nonNull(userDetails)) {
       UserDetailsModel userDetailsModel = new UserDetailsModel();
       userDetailsModel = setUserDetailsModel(userDetails, userDetailsModel);
       responseObject.setResponseObject(userDetailsModel);
+      responseObject.setStatus(DynamicProfileStatusCode.USER_ALREADY_EXIST);
+    } else {
+      responseObject.setStatus(DynamicProfileStatusCode.USER_DOES_NOT_EXIST);
     }
-    responseObject.setStatus(SUCCESS);
     return responseObject;
   }
 

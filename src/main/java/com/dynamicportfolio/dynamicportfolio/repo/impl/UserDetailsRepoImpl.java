@@ -5,10 +5,12 @@ import com.dynamicportfolio.dynamicportfolio.repo.UserDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.MongoRegexCreator;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Repository("com.dynamicportfolio.dynamicportfolio.repo.impl.UserDetailsRepoImpl")
@@ -54,14 +56,18 @@ public class UserDetailsRepoImpl implements UserDetailsRepo {
   @Override
   public UserDetails fetchUserByEmail(String email) {
     Query query = new Query();
-    query.addCriteria(Criteria.where("authDetail.email").is(email));
+    query.addCriteria(Criteria.where("authDetail.email").regex(Objects.requireNonNull(
+        MongoRegexCreator.INSTANCE
+            .toRegularExpression(email, MongoRegexCreator.MatchMode.EXACT)), "i"));
     return mongoTemplate.findOne(query, UserDetails.class);
   }
 
   @Override
   public UserDetails fetchUserByUserName(String userName) {
     Query query = new Query();
-    query.addCriteria(Criteria.where("authDetail.userName").is(userName));
+    query.addCriteria(Criteria.where("authDetail.userName").regex(Objects.requireNonNull(
+        MongoRegexCreator.INSTANCE
+            .toRegularExpression(userName, MongoRegexCreator.MatchMode.EXACT)), "i"));
     return mongoTemplate.findOne(query, UserDetails.class);
   }
 
