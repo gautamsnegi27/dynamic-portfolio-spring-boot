@@ -128,6 +128,9 @@ public class UserDetailsServiceImpl implements UserDetailsService,
     Boolean status;
     UserDetails userDetails = userDetailsRepo.
         fetchUserByUserName(authDetailModel.getUserName());
+    if (Objects.isNull(userDetails)) {
+      userDetails = userDetailsRepo.fetchUserByEmail(authDetailModel.getUserName());
+    }
     if (!(Objects.nonNull(userDetails) && bCryptPasswordEncoder
         .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword()))) {
       logger.error("invalid user details for authDetailModel: {}", authDetailModel);
