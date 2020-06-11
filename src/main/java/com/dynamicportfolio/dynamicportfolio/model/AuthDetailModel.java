@@ -18,6 +18,7 @@ public class AuthDetailModel {
   @NotNull(message = "name is mandatory")
   private String firstName;
   private String LastName;
+  private String jwtToken;
 
   public String getEmail() {
     return email;
@@ -59,6 +60,13 @@ public class AuthDetailModel {
     LastName = lastName;
   }
 
+  public String getJwtToken() {
+    return jwtToken;
+  }
+
+  public void setJwtToken(String jwtToken) {
+    this.jwtToken = jwtToken;
+  }
 
   public AuthDetailModel() {
   }
@@ -74,6 +82,6 @@ public class AuthDetailModel {
   public String toString() {
     return "AuthDetailModel{" + "email='" + email + '\'' + ", userName='" + userName + '\''
         + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", LastName='"
-        + LastName + '\'' + '}';
+        + LastName + '\'' + ", jwtToken='" + jwtToken + '\'' + '}';
   }
 }

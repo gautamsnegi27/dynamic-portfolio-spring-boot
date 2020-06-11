@@ -18,6 +18,7 @@ import com.dynamicportfolio.dynamicportfolio.model.UserDetailsModel;
 import com.dynamicportfolio.dynamicportfolio.repo.UserDetailsRepo;
 import com.dynamicportfolio.dynamicportfolio.service.SequenceGeneratorService;
 import com.dynamicportfolio.dynamicportfolio.service.UserDetailsService;
+import com.dynamicportfolio.dynamicportfolio.utils.JwtUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -57,6 +58,14 @@ public class UserDetailsServiceImpl implements UserDetailsService,
   @Autowired
   @Qualifier("com.dynamicportfolio.dynamicportfolio.service.impl.SequenceGeneratorServiceImpl")
   private SequenceGeneratorService sequenceGeneratorService;
+
+  @Autowired
+  @Qualifier("com.dynamicportfolio.dynamicportfolio.service.impl.CustomUserDetailsServiceImpl")
+  private org.springframework.security.core.userdetails.UserDetailsService customUserDetailsService;
+
+  @Autowired
+  @Qualifier("com.dynamicportfolio.dynamicportfolio.utils.JwtUtil")
+  private JwtUtil jwtUtil;
 
   @Override
   public DynamicProfileResponseObject<UserDetailsModel> createUser(
@@ -122,23 +131,23 @@ public class UserDetailsServiceImpl implements UserDetailsService,
   }
 
   @Override
-  public Boolean getUser(AuthDetailModel authDetailModel) {
+  public AuthDetailModel getUser(AuthDetailModel authDetailModel) {
     logger.info("request came to fetch email: {}, username: {}", authDetailModel.getEmail(),
         authDetailModel.getUserName());
-    Boolean status;
     UserDetails userDetails = userDetailsRepo.
         fetchUserByUserName(authDetailModel.getUserName());
     if (Objects.isNull(userDetails)) {
       userDetails = userDetailsRepo.fetchUserByEmail(authDetailModel.getUserName());
     }
-    if (!(Objects.nonNull(userDetails) && bCryptPasswordEncoder
-        .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword()))) {
+    if (Objects.nonNull(userDetails) && bCryptPasswordEncoder
+        .matches(authDetailModel.getPassword(), userDetails.getAuthDetail().getPassword())) {
       logger.error("invalid user details for authDetailModel: {}", authDetailModel);
-      status = Boolean.FALSE;
-    } else {
-      status = Boolean.TRUE;
+      org.springframework.security.core.userdetails.UserDetails userDetailsWithJwt =
+          customUserDetailsService.loadUserByUsername(userDetails.getAuthDetail().getUserName());
+      BeanUtils.copyProperties(userDetails.getAuthDetail(), authDetailModel);
+      authDetailModel.setJwtToken(jwtUtil.generateToken(userDetailsWithJwt));
     }
-    return status;
+    return authDetailModel;
   }
 
   @Override
